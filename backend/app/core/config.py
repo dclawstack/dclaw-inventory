@@ -3,7 +3,7 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    app_name: str = "DClaw CRM"
+    app_name: str = "DClaw Inventory"
     app_env: str = "dev"
     debug: bool = True
 
