@@ -1,0 +1,17 @@
+{
+  "main": {
+    "id": "main",
+    "type": "split",
+    "children": []
+  },
+  "left": {
+    "id": "left",
+    "type": "leaves",
+    "children": []
+  },
+  "right": {
+    "id": "right",
+    "type": "leaves",
+    "children": []
+  }
+}
