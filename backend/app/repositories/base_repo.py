@@ -9,30 +9,26 @@ T = TypeVar("T", bound=Base)
 
 
 class BaseRepository(Generic[T]):
-    """Generic async CRUD repository.
-
-    Subclass per entity:
-        class UserRepository(BaseRepository[User]):
-            def __init__(self, db: AsyncSession):
-                super().__init__(db, User)
-    """
-
-    def __init__(self, db: AsyncSession, model: type[T]):
+    def __init__(self, db: AsyncSession, model: type[T], tenant_id: UUID):
         self.db = db
         self.model = model
+        self.tenant_id = tenant_id
+
+    def _base_query(self):
+        return select(self.model).where(self.model.tenant_id == self.tenant_id)
 
     async def list_all(self, limit: int = 20, offset: int = 0) -> tuple[list[T], int]:
-        result = await self.db.execute(
-            select(self.model).limit(limit).offset(offset)
-        )
+        result = await self.db.execute(self._base_query().limit(limit).offset(offset))
         items = list(result.scalars().all())
-        count_result = await self.db.execute(select(func.count()).select_from(self.model))
+        count_result = await self.db.execute(
+            select(func.count()).select_from(self.model).where(self.model.tenant_id == self.tenant_id)
+        )
         total = count_result.scalar() or 0
         return items, total
 
     async def get_by_id(self, item_id: UUID) -> T | None:
         result = await self.db.execute(
-            select(self.model).where(self.model.id == item_id)
+            self._base_query().where(self.model.id == item_id)
         )
         return result.scalar_one_or_none()
 
@@ -47,5 +43,7 @@ class BaseRepository(Generic[T]):
         await self.db.commit()
 
     async def count(self) -> int:
-        result = await self.db.execute(select(func.count()).select_from(self.model))
+        result = await self.db.execute(
+            select(func.count()).select_from(self.model).where(self.model.tenant_id == self.tenant_id)
+        )
         return result.scalar() or 0

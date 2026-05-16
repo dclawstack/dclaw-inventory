@@ -1,6 +1,6 @@
 import enum
 from uuid import UUID, uuid4
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 
@@ -22,10 +22,14 @@ class ProductCategory(str, enum.Enum):
 
 class Product(Base):
     __tablename__ = "products"
+    __table_args__ = (UniqueConstraint("sku", "tenant_id", name="uq_product_sku_tenant"),)
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(
+        ForeignKey("tenants.id", ondelete="CASCADE"), nullable=False, index=True
+    )
     name: Mapped[str] = mapped_column(nullable=False)
-    sku: Mapped[str] = mapped_column(nullable=False, unique=True)
+    sku: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str | None] = mapped_column(nullable=True)
     category: Mapped[ProductCategory] = mapped_column(nullable=False)
     unit_price: Mapped[float] = mapped_column(nullable=False, default=0)

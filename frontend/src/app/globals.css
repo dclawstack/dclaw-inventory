@@ -4,25 +4,93 @@
 
 @layer base {
   :root {
+    /* ── DKube design tokens ── */
+    --dk-purple-900: #4A3878;
+    --dk-purple-800: #5C4A8E;
+    --dk-purple-700: #7660A8;
+    --dk-purple-600: #8773B5;
+    --dk-purple-500: #9384BD;
+    --dk-purple-400: #B0A4CE;
+    --dk-purple-300: #C9C0DE;
+    --dk-purple-200: #E2DCEE;
+    --dk-purple-100: #F1EEF8;
+    --dk-purple-50:  #F8F6FB;
+
+    --dk-ink:        #0F0F12;
+    --dk-gray-900:   #1A1A20;
+    --dk-gray-800:   #2B2B33;
+    --dk-gray-700:   #404049;
+    --dk-gray-600:   #5A5A66;
+    --dk-gray-500:   #7A7A85;
+    --dk-gray-400:   #A3A3AC;
+    --dk-gray-300:   #D6D6D6;
+    --dk-gray-200:   #E8E8EC;
+    --dk-gray-100:   #F2F2F4;
+    --dk-gray-50:    #F8F8FA;
+    --dk-white:      #FFFFFF;
+
+    --dk-success:    #2E8B57;
+    --dk-success-bg: #E6F4EC;
+    --dk-warning:    #C28A00;
+    --dk-warning-bg: #FBF1DC;
+    --dk-danger:     #B3261E;
+    --dk-danger-bg:  #FBE9E7;
+    --dk-info:       #2C6CB0;
+    --dk-info-bg:    #E5EFF9;
+
+    --dk-bg:            var(--dk-white);
+    --dk-bg-muted:      var(--dk-gray-50);
+    --dk-bg-tint:       var(--dk-purple-50);
+    --dk-bg-inverse:    var(--dk-ink);
+
+    --dk-fg:            var(--dk-ink);
+    --dk-fg-1:          var(--dk-gray-700);
+    --dk-fg-2:          var(--dk-gray-500);
+    --dk-fg-muted:      var(--dk-gray-400);
+    --dk-fg-on-brand:   var(--dk-white);
+    --dk-fg-inverse:    var(--dk-white);
+
+    --dk-brand:         var(--dk-purple-700);
+    --dk-brand-hover:   var(--dk-purple-800);
+    --dk-brand-press:   var(--dk-purple-900);
+    --dk-brand-soft:    var(--dk-purple-100);
+
+    --dk-border:        var(--dk-gray-200);
+    --dk-border-strong: var(--dk-gray-300);
+    --dk-border-brand:  var(--dk-purple-300);
+
+    --dk-font-sans: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --dk-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --dk-radius-sm: 8px;
+    --dk-radius-md: 12px;
+    --dk-radius-lg: 16px;
+    --dk-radius-pill: 999px;
+
+    --dk-shadow-sm: 0 2px 6px rgba(15,15,18,0.06);
+    --dk-shadow-md: 0 8px 20px rgba(15,15,18,0.08);
+    --dk-shadow-brand: 0 12px 28px rgba(118,96,168,0.28);
+
+    /* ── Remap Tailwind/shadcn tokens to DKube palette ── */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 240 5% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 240 5% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --popover-foreground: 240 5% 7%;
+    --primary: 259 26% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 259 26% 96%;
+    --secondary-foreground: 259 26% 35%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 5% 48%;
+    --accent: 259 26% 96%;
+    --accent-foreground: 259 26% 35%;
+    --destructive: 3 75% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 91%;
+    --input: 240 6% 91%;
+    --ring: 259 26% 53%;
     --radius: 0.5rem;
   }
 
@@ -32,5 +100,12 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: var(--dk-font-sans);
   }
 }
+
+/* ── DKube type utility classes ── */
+.dk-h3 { font-size: 32px; font-weight: 700; line-height: 1.15; color: var(--dk-fg); }
+.dk-h4 { font-size: 24px; font-weight: 600; line-height: 1.15; color: var(--dk-fg); }
+.dk-h5 { font-size: 20px; font-weight: 600; line-height: 1.15; color: var(--dk-fg); }
+.dk-eyebrow { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--dk-brand); }

@@ -108,7 +108,7 @@ Before implementing any v1.2 feature, verify:
 - [x] Docker + docker-compose with healthchecks
 - [x] GitHub Actions CI
 - [x] Next.js pages: `/products`, `/products/[id]`, `/warehouses`, `/suppliers`
-- [ ] Dashboard (`/api/v1/dashboard` endpoint + `/` frontend page with real data)
+- [x] Dashboard (`/api/v1/dashboard` endpoint + `/` frontend page with real data)
 
 ---
 
@@ -116,7 +116,7 @@ Before implementing any v1.2 feature, verify:
 
 ### P0 — Must Have
 
-#### 1. Dashboard with Live Stats
+#### 1. Dashboard with Live Stats ✅
 **Description:** The `/` page shows real-time KPI cards and a low-stock alert table. Currently renders mock/empty data. This is the first screen every user sees — it must be real.
 - **Backend:**
   - `GET /api/v1/dashboard` — returns `{ total_products, total_warehouses, total_suppliers, total_inventory_value, low_stock_count, low_stock_products[] }`
@@ -129,7 +129,7 @@ Before implementing any v1.2 feature, verify:
   - Stock badge using semantic color rules above
   - Files: `frontend/src/app/page.tsx`, `frontend/src/lib/api.ts` (add `getDashboardStats()`)
 
-#### 2. Stock Movement Audit Trail
+#### 2. Stock Movement Audit Trail ✅
 **Description:** Every stock change (restock, sale, adjustment, transfer) is logged as an immutable event. This is the core differentiator for any serious inventory tool — without it, users cannot answer "why is my stock wrong?"
 - **Backend:**
   - New model `StockMovement`: `id`, `product_id` (FK), `warehouse_id` (FK, nullable), `movement_type` (enum: `restock`, `sale`, `adjustment`, `transfer_in`, `transfer_out`), `quantity_delta` (int, positive or negative), `note` (str, optional), `created_at`
@@ -145,7 +145,7 @@ Before implementing any v1.2 feature, verify:
   - Global `/movements` page with full audit log + type filter using `Tabs`
   - Files: `frontend/src/app/movements/page.tsx`, `frontend/src/app/products/[id]/page.tsx` (add movement section)
 
-#### 3. Low Stock Alerts Panel
+#### 3. Low Stock Alerts Panel ✅
 **Description:** Dedicated view of all products at or below their reorder level. Warehouse managers need to action these immediately. Shown on dashboard and as a standalone page.
 - **Backend:**
   - `GET /api/v1/products?low_stock=true` — add `low_stock` query param filter to existing products endpoint
@@ -156,7 +156,7 @@ Before implementing any v1.2 feature, verify:
   - Nav badge showing low-stock count (fetched from dashboard stats)
   - Files: `frontend/src/app/alerts/page.tsx`, update nav in `layout.tsx`
 
-#### 4. Product Search and Category Filter
+#### 4. Product Search and Category Filter ✅
 **Description:** The `/products` list page currently has no search or filter. Users cannot find products in a large catalog without it.
 - **Backend:**
   - `GET /api/v1/products?search=<term>&category=<cat>&warehouse_id=<id>` — add query params to list endpoint
@@ -171,7 +171,7 @@ Before implementing any v1.2 feature, verify:
 
 ### P1 — Should Have
 
-#### 5. Warehouse Inventory View
+#### 5. Warehouse Inventory View ✅
 **Description:** Show all products stored in a specific warehouse, with total capacity utilization. Essential for warehouse managers who think in physical locations.
 - **Backend:**
   - `GET /api/v1/warehouses/{id}/products` — list products in a warehouse with stock levels
@@ -183,7 +183,7 @@ Before implementing any v1.2 feature, verify:
   - Capacity bar: `bg-primary` fill on `bg-muted` track, color shifts to `bg-destructive` when > 90%
   - Files: `frontend/src/app/warehouses/[id]/page.tsx`
 
-#### 6. Supplier Product Catalog View
+#### 6. Supplier Product Catalog View ✅
 **Description:** Show all products sourced from a supplier. Procurement teams need to see exposure per supplier for risk management.
 - **Backend:**
   - `GET /api/v1/suppliers/{id}/products` — products linked to this supplier
@@ -193,7 +193,7 @@ Before implementing any v1.2 feature, verify:
   - `/suppliers/[id]` detail page — supplier info card, products table with stock levels
   - Files: `frontend/src/app/suppliers/[id]/page.tsx`
 
-#### 7. Warehouse Stock Transfer
+#### 7. Warehouse Stock Transfer ✅
 **Description:** Move quantity of a product from one warehouse to another as a single atomic operation. Creates two `StockMovement` records (`transfer_out` + `transfer_in`).
 - **Backend:**
   - `POST /api/v1/products/{id}/transfer` — body: `{ from_warehouse_id, to_warehouse_id, quantity }`
@@ -204,7 +204,7 @@ Before implementing any v1.2 feature, verify:
   - "Transfer Stock" button on `/products/[id]` opens `Dialog` with warehouse selects + quantity input
   - Files: `frontend/src/app/products/[id]/page.tsx`
 
-#### 8. CSV Export
+#### 8. CSV Export ✅
 **Description:** Export products or movements to CSV. Required for finance/ops teams who live in spreadsheets. YC-backed ops tools always include this.
 - **Backend:**
   - `GET /api/v1/products/export?format=csv` — streams CSV response
@@ -217,7 +217,7 @@ Before implementing any v1.2 feature, verify:
   - Triggers `window.location.href` to download endpoint
   - Files: `frontend/src/app/products/page.tsx`, `frontend/src/app/movements/page.tsx`
 
-#### 9. Inline Edit on Product Detail
+#### 9. Inline Edit on Product Detail ✅
 **Description:** Edit product fields inline on `/products/[id]` without navigating to a separate edit page. Reduces clicks for warehouse managers doing spot corrections.
 - **Frontend only** (existing PUT endpoint is already wired):
   - Toggle "Edit" mode on product detail card — inputs replace text, "Save" / "Cancel" buttons appear
@@ -228,7 +228,7 @@ Before implementing any v1.2 feature, verify:
 
 ### P2 — Could Have
 
-#### 10. AI: Category Auto-Suggest
+#### 10. AI: Category Auto-Suggest ✅
 **Description:** When creating a product, suggest a category based on the product name using Claude Haiku. Reduces mis-categorization. Inspired by Flieber's auto-tagging.
 - **Backend:**
   - `POST /api/v1/products/suggest-category` — body: `{ name: str }` → returns `{ category: str, confidence: float }`
@@ -240,7 +240,7 @@ Before implementing any v1.2 feature, verify:
   - "Suggest" button next to Category field in "Add Product" form — shows spinner, then pre-fills Select
   - Files: `frontend/src/app/products/page.tsx`
 
-#### 11. AI: Reorder Suggestions
+#### 11. AI: Reorder Suggestions ✅
 **Description:** Analyze movement history to predict which products will hit reorder level within 14 days. Surfaces on dashboard as "Action Required" panel.
 - **Backend:**
   - `GET /api/v1/dashboard/reorder-forecast` — for each product with movements, compute avg daily consumption from last 30 days, estimate days until reorder level hit
@@ -262,7 +262,7 @@ Before implementing any v1.2 feature, verify:
   - "Load more" button or simple prev/next pagination using `Badge` + `Button` components
   - Files: all list pages
 
-#### 13. Bulk Product Import via CSV
+#### 13. Bulk Product Import via CSV ✅
 **Description:** Upload a CSV of products (name, sku, category, unit_price, quantity_in_stock) and create them in bulk. Essential for onboarding new warehouses.
 - **Backend:**
   - `POST /api/v1/products/import` — multipart file upload, parses CSV, validates rows, bulk inserts
